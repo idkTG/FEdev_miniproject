@@ -38,6 +38,7 @@ class App extends Component {
         return console.error(error);
       }
       if (this.state) {
+        // osiguranje da se prazne vrijednosti ne spremaju u state
         const chatmember = this.state.chatmember;
         chatmember.id = this.drone.clientId;
         this.setState({ chatmember });
@@ -48,6 +49,7 @@ class App extends Component {
       const messages = this.state.messages;
       messages.push({ member, text: data }); //clientData se nalazi unutar member
       if (messages.length > 0) {
+        // osiguranje da se prazne vrijednosti ne spremaju u state
         this.setState({ messages });
       }
     });

@@ -22,7 +22,8 @@ class Messages extends Component {
     // Metoda renderMessage uzima jedan objekt poruke kao argument i vraća stavku liste koja sadrži sadržaj poruke, korisničko ime i avatar pošiljatelja.
 
     const randomId = Math.floor(Math.random() * 999999999999);
-    /* ružna solucija za rješavanje errora u console. App traži ID te sam mu dodjelio "smeće". Kod se bavi problemom 
+    /* ružna solucija za rješavanje errora u console jer postoji slučajnost da se brojevi ponove. Striktno korišteno da se silenca error u konzoli.
+    App traži ID te sam mu dodjelio "smeće". Kod se bavi problemom 
     kao što je generiranje slučajnog ID-a za dodjelu svakoj poruci kako bi se izbjegle poruke pogrešaka u konzoli, 
     i postavljanjem imena klase svake poruke da bi se istaknule poruke trenutnog člana
     */

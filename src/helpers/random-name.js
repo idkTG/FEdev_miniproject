@@ -135,5 +135,10 @@ function randomName() {
   const noun = nouns[Math.floor(Math.random() * nouns.length)];
   return adjective + noun;
 }
+/*
+spajaju se pridjev i imenica da se stvori username. Math.floor odabire nižu decimalu. 
+Math.random nasumce odabire decimalu između 0 i 1. adjectives.length ima broj elemenata u array od adjectives. 
+Isto vrijedi i za noun.
+*/
 
 export default randomName;
