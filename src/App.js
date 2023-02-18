@@ -1,149 +1,10 @@
 import Input from "./Input";
 import Messages from "./Messages";
+import randomName from "./helpers/random-name.js";
+import randomColor from "./helpers/random-color";
 import "./App.css";
+
 import React, { Component } from "react";
-
-function randomName() {
-  const adjectives = [
-    "autumn",
-    "hidden",
-    "bitter",
-    "misty",
-    "silent",
-    "empty",
-    "dry",
-    "dark",
-    "summer",
-    "icy",
-    "delicate",
-    "quiet",
-    "white",
-    "cool",
-    "spring",
-    "winter",
-    "patient",
-    "twilight",
-    "dawn",
-    "crimson",
-    "wispy",
-    "weathered",
-    "blue",
-    "billowing",
-    "broken",
-    "cold",
-    "damp",
-    "falling",
-    "frosty",
-    "green",
-    "long",
-    "late",
-    "lingering",
-    "bold",
-    "little",
-    "morning",
-    "muddy",
-    "old",
-    "red",
-    "rough",
-    "still",
-    "small",
-    "sparkling",
-    "throbbing",
-    "shy",
-    "wandering",
-    "withered",
-    "wild",
-    "black",
-    "young",
-    "holy",
-    "solitary",
-    "fragrant",
-    "aged",
-    "snowy",
-    "proud",
-    "floral",
-    "restless",
-    "divine",
-    "polished",
-    "ancient",
-    "purple",
-    "lively",
-    "nameless",
-  ];
-  const nouns = [
-    "waterfall",
-    "river",
-    "breeze",
-    "moon",
-    "rain",
-    "wind",
-    "sea",
-    "morning",
-    "snow",
-    "lake",
-    "sunset",
-    "pine",
-    "shadow",
-    "leaf",
-    "dawn",
-    "glitter",
-    "forest",
-    "hill",
-    "cloud",
-    "meadow",
-    "sun",
-    "glade",
-    "bird",
-    "brook",
-    "butterfly",
-    "bush",
-    "dew",
-    "dust",
-    "field",
-    "fire",
-    "flower",
-    "firefly",
-    "feather",
-    "grass",
-    "haze",
-    "mountain",
-    "night",
-    "pond",
-    "darkness",
-    "snowflake",
-    "silence",
-    "sound",
-    "sky",
-    "shape",
-    "surf",
-    "thunder",
-    "violet",
-    "water",
-    "wildflower",
-    "wave",
-    "water",
-    "resonance",
-    "sun",
-    "wood",
-    "dream",
-    "cherry",
-    "tree",
-    "fog",
-    "frost",
-    "voice",
-    "paper",
-    "frog",
-    "smoke",
-    "star",
-  ];
-  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-  const noun = nouns[Math.floor(Math.random() * nouns.length)];
-  return adjective + noun;
-}
-
-function randomColor() {
-  return "#" + Math.floor(Math.random() * 0xffffff).toString(16);
-}
 
 class App extends Component {
   state = {
@@ -153,27 +14,49 @@ class App extends Component {
       color: randomColor(),
     },
   };
+  /*
+  Komponenta definira početno stanje člana chata s nasumičnim korisničkim imenom i bojom, 
+  a koristi biblioteku Scaledrone za stvaranje veze s prostorijom za chat.
+  */
 
   constructor() {
     super();
+    /*
+    Upotreba super() je važna kada se definira konstruktor za podrazred koji proširuje nadređeni razred (parent, child), 
+    jer osigurava da se konstruktor nadređenog razreda pozove prije konstruktora podrazreda 
+    te da se obavi svako potrebno podešavanje ili inicijalizacija.
+    */
+
     this.drone = new window.Scaledrone("WxEBl3VtnDcmqr4W", {
+      // channelID koji je generirao Scaledrone bi se trebao nalazi unutar .env da se izbjegne hardcodiranje i ostvari privatnost
+
       data: this.state.chatmember,
     });
+
     this.drone.on("open", (error) => {
       if (error) {
         return console.error(error);
       }
-      const chatmember = { ...this.state.chatmember };
-      chatmember.id = this.drone.clientId;
-      this.setState({ chatmember });
+      if (this.state) {
+        const chatmember = this.state.chatmember;
+        chatmember.id = this.drone.clientId;
+        this.setState({ chatmember });
+      }
     });
     const room = this.drone.subscribe("observable-room");
     room.on("data", (data, member) => {
       const messages = this.state.messages;
-      messages.push({ member, text: data }); //clientData wrapped in member
-      this.setState({ messages });
+      messages.push({ member, text: data }); //clientData se nalazi unutar member
+      if (messages.length > 0) {
+        this.setState({ messages });
+      }
     });
   }
+  /*
+  Konstruktor inicijalizira instancu Scaledrone-a s podacima člana chata i spaja se na kanal "observable-room" 
+  kako bi slušao dolazne poruke. Kada stigne nova poruka, dodaje je u niz poruka stanja, 
+  što pokreće ponovno iscrtavanje komponente.
+  */
 
   render() {
     return (
@@ -189,6 +72,12 @@ class App extends Component {
       </div>
     );
   }
+  /*
+  Metoda render vraća raspored aplikacije za chat, koji uključuje zaglavlje, 
+  komponentu Messages i komponentu Input. 
+  Komponenti Messages prosljeđuje se trenutno stanje poruka i člana chata, 
+  dok se komponenti Input prosljeđuje povratni pozivna funkcija za slanje poruke.
+  */
 
   onSendMessage = (message) => {
     this.drone.publish({
