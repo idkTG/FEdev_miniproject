@@ -2,6 +2,7 @@
 
 Zadatak je napisati web chat aplikaciju.
 ReactJS je korišten za izradu projekta.
+Seminarski rad je dostupan i na [GitHub](https://github.com/idkTG/algebra_fedev_tonigorian).
 
 #### Funkcionalna specifikacija
 
